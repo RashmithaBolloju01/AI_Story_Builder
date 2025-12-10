@@ -1,0 +1,72 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>AI Story Builder</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: auto; padding: 20px; }
+        textarea { width: 100%; height: 200px; }
+    </style>
+</head>
+<body>
+    <h1>AI Story Builder</h1>
+
+    <form method="POST">
+        <input name="protagonist" placeholder="Protagonist" required><br><br>
+        <input name="ally" placeholder="Supporting Character" required><br><br>
+        <input name="antagonist" placeholder="Antagonist" required><br><br>
+        <input name="setting" placeholder="Setting" required><br><br>
+        <input name="conflict" placeholder="Conflict" required><br><br>
+        <input name="object" placeholder="Important Object" required><br><br>
+        <input name="theme" placeholder="Theme" required><br><br>
+
+        <select name="ending">
+            <option>happy</option>
+            <option>sad</option>
+            <option>bittersweet</option>
+            <option>hopeful</option>
+            <option>tragic</option>
+            <option>poetic</option>
+            <option>heroic</option>
+        </select><br><br>
+
+        <button type="submit">Generate Story</button>
+    </form>
+
+    {% if story %}
+        <h2>Your Story</h2>
+        <textarea readonly>{{ story }}</textarea>
+    {% endif %}
+</body>
+</html> -->
+
+from flask import Flask, render_template, request
+from story_engine.engine import StoryEngine
+
+app = Flask(__name__)
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    story = None
+    info = None
+    if request.method == "POST":
+        p = request.form.get("protagonist", "").strip()
+        ally = request.form.get("ally", "").strip() or "a companion"
+        ant = request.form.get("antagonist", "").strip() or "an opposing force"
+        setting = request.form.get("setting", "").strip()
+        conflict = request.form.get("conflict", "").strip()
+        obj = request.form.get("object", "").strip()
+        theme = request.form.get("theme", "").strip() or "life"
+        ending = request.form.get("ending", "hopeful").strip().lower()
+        expand = True if request.form.get("expand") == "on" else False
+        model = request.form.get("model", "").strip() or None
+
+        engine = StoryEngine(model_name=model, do_expand=expand)
+        story = engine.generate(p, ally, ant, setting, conflict, obj, theme, ending)
+        info = {
+            "model_used": model if expand and model else ("template-only" if not expand else "default-model")
+        }
+
+    return render_template("index.html", story=story, info=info)
+
+if __name__ == "__main__":
+    app.run(debug=True)
