@@ -1,111 +1,103 @@
-# AI Story Builder — Hybrid Story Generation Engine
+# AI Story Builder
 
-A modular, extensible story-generation system that combines deterministic template-based logic with optional transformer-based text expansion. The project demonstrates practical software engineering, AI integration, and clean modular design using Python, Flask, and HuggingFace Transformers.
+AI Story Builder is a modular hybrid story-generation system that produces coherent narrative structures based on user input, with optional enhancement through transformer-based language models. Designed with clarity, extensibility, and practical AI integration in mind, it demonstrates how deterministic logic and machine-learning models can be combined in a single workflow.
 
-The repository provides two interfaces:
-i.Command-Line Interface (CLI)
-ii.Web Application (Flask-based UI)
+# Project Overview
 
-The core engine constructs coherent narratives using a structured plot framework, with optional transformer-based rewriting for creative enhancement.
+This project provides a complete story-generation pipeline implemented in Python.
+It includes:
+A deterministic template-based story engine
+Optional transformer model expansion (e.g., DistilGPT-2) for narrative enrichment
+A command-line interface for structured input
+A lightweight Flask web interface for interactive story creation
+The system is structured for clear maintainability and is suitable for academic demos, portfolio showcases, and integration into larger creative-writing or content-generation platforms.
 
-# Key Features
+# Features
 
-## Hybrid Story Generation Pipeline
-Combines rule-based plot construction with transformer-based narrative enrichment.
-## Deterministic and AI-Augmented Modes
-Deterministic mode offers consistent, logically structured stories.
-AI expansion mode generates expressive, human-like narrative flow.
-## Configurable Story Elements
-Users specify prototype story inputs including protagonist, supporting characters, conflict, setting, themes, and ending style.
-## Seven Complete Ending Styles
-Supports: happy, sad, bittersweet, hopeful, tragic, poetic, and heroic.
-## Clean Software Architecture
-Clear separation of engine logic, user interfaces, and optional AI expansion layers.
-## Graceful Fallback Behavior
-If a transformer model is unavailable, the engine defaults to deterministic generation without errors.
-## Implementation
-This project is suitable for demonstrating AI integration, backend logic design, and model-based text generation.
+User-defined story components (protagonist, characters, conflict, setting, themes)
+Seven complete ending styles (happy, sad, bittersweet, hopeful, tragic, poetic, heroic)
+Deterministic story generation using structured logic
+Optional AI rewriting using HuggingFace Transformers
+Flask-based web interface for interactive usage
+Robust CLI interface for local or automated use
+Graceful fallback when model expansion is not available
+Fully modular engine suitable for future upgrades
+
+# Technologies Used
+
+| Category     | Tools and Libraries               |
+| ------------ | --------------------------------- |
+| Language     | Python 3.10+                      |
+| Framework    | Flask                             |
+| AI/ML        | HuggingFace Transformers, PyTorch |
+| Architecture | Modular engine + CLI + Web UI     |
+| Utilities    | Textwrap, argparse                |
+
 
 # Project Structure
 
 AI-STORY-BUILDER/
-│
-├── cli_app/
-│   └── story_cli.py          # CLI interface
-│
-├── story_engine/
+├── story_engine/           # Core narrative engine
 │   ├── __init__.py
-│   └── engine.py             # Core hybrid story generator
+│   └── engine.py
 │
-├── web_app/
-│   ├── app.py                # Flask web server
+├── cli_app/                # Command-line interface
+│   └── story_cli.py
+│
+├── web_app/                # Web application (Flask)
+│   ├── app.py
 │   └── templates/
-│       └── index.html        # Web interface
+│       └── index.html
 │
-├── venv/                     # Virtual environment (ignored by Git)
-│
+├── venv/                   # Virtual environment (excluded from Git)
 ├── requirements.txt
 ├── LICENSE
 └── README.md
 
-# Installation
+# How to Run
 
-1. Clone the repository
+## Clone the repository
 git clone https://github.com/YOUR-USERNAME/AI-Story-Builder.git
 cd AI-Story-Builder
-2. Create and activate a virtual environment
+## Create and activate a virtual environment
 python -m venv venv
-source venv/bin/activate      # macOS / Linux
-venv\Scripts\activate         # Windows
-3. Install dependencies
+source venv/bin/activate       # macOS/Linux
+venv\Scripts\activate          # Windows
+## Install dependencies
 pip install -r requirements.txt
-
-If PyTorch installation fails, refer to the official installation guide:
-https://pytorch.org/get-started/locally/
-
-# Usage
-1. CLI Mode
-Deterministic (template-only) story generation:
+## Run the CLI application
+Template-only mode:
 python -m cli_app.story_cli
-Hybrid mode with transformer model expansion:
+With AI expansion:
 python -m cli_app.story_cli --expand --model distilgpt2
-2. Web Application
-Start the Flask application:
+## Run the Web Application
 python web_app/app.py
-Open the web interface in your browser:
+## The application will be available at:
 http://127.0.0.1:5000/
-## The web interface allows users to:
-i.Input all story parameters
-ii.Choose ending style
-iii.Enable AI expansion
-iv.Select transformer model (optional)
 
-# Technical Overview
+# Sample Use Case
 
-## Deterministic Story Layer
-Constructs a narrative using a structured plot progression:
--Opening
--Rising action
--Conflict escalation
--Resolution
-Ensures logical continuity and complete endings.
+A user provides the following inputs:
+Protagonist: "Elian"
+Supporting character: "Mira"
+Antagonist: "Varek"
+Setting: "an abandoned research facility"
+Conflict: "a discovery that challenges their understanding of reality"
+Object: "a fragmented data core"
+Theme: "identity"
+Ending: "bittersweet"
+The system generates a complete narrative with structured progression.
+If AI expansion is enabled, the transformer model refines the text to produce a more natural, expressive version while preserving plot integrity.
 
-# AI Expansion Layer (Optional)
+# Future Enhancements
 
-When enabled, a transformer model:
--Expands narrative detail
--Adds stylistic variation
--Enhances emotional depth
--Preserves original plot and ending constraints
-The model layer is optional and automatically disabled if dependencies are missing.
-
-# Requirements
-
--flask
--transformers
--torch
-Torch installation size varies based on system; CPU-only versions are sufficient for this project.
+Multi-chapter story generation
+Genre-specific story frameworks
+Detailed character personality modeling
+Advanced transformer tuning or fine-tuning
+API layer for integration with external applications
+Cloud deployment options (Render, Railway, HuggingFace Spaces)
 
 # License
 
-This project is released under the MIT License.
+This project is licensed under the MIT License.
