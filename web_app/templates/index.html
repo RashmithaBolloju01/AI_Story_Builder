@@ -1,24 +1,122 @@
 <!-- <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>AI Story Builder</title>
+
     <style>
-        body { font-family: Arial; max-width: 600px; margin: auto; padding: 20px; }
-        textarea { width: 100%; height: 200px; }
+        body {
+            font-family: "Inter", Arial, sans-serif;
+            background: linear-gradient(to bottom right, #eef1f5, #d9dee4);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 60px auto;
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #333;
+        }
+
+        label {
+            font-weight: 500;
+            margin-top: 14px;
+            display: block;
+            color: #444;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 1px solid #cfd3d8;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            transition: 0.2s ease;
+            background: #f9fafb;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #4a74ff;
+            background: #ffffff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74,116,255,0.2);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: #4a74ff;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        button:hover {
+            background: #3c5edd;
+        }
+
+        .story-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f4f6fa;
+            border-radius: 10px;
+            border: 1px solid #d7dce3;
+        }
+
+        .info-text {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #555;
+        }
     </style>
 </head>
+
 <body>
+
+<div class="container">
     <h1>AI Story Builder</h1>
 
     <form method="POST">
-        <input name="protagonist" placeholder="Protagonist" required><br><br>
-        <input name="ally" placeholder="Supporting Character" required><br><br>
-        <input name="antagonist" placeholder="Antagonist" required><br><br>
-        <input name="setting" placeholder="Setting" required><br><br>
-        <input name="conflict" placeholder="Conflict" required><br><br>
-        <input name="object" placeholder="Important Object" required><br><br>
-        <input name="theme" placeholder="Theme" required><br><br>
+        <label>Protagonist</label>
+        <input name="protagonist" required>
 
+        <label>Supporting Character</label>
+        <input name="ally">
+
+        <label>Antagonist</label>
+        <input name="antagonist">
+
+        <label>Setting</label>
+        <input name="setting" required>
+
+        <label>Conflict</label>
+        <input name="conflict" required>
+
+        <label>Important Object</label>
+        <input name="object">
+
+        <label>Theme</label>
+        <input name="theme">
+
+        <label>Ending Style</label>
         <select name="ending">
             <option>happy</option>
             <option>sad</option>
@@ -27,46 +125,228 @@
             <option>tragic</option>
             <option>poetic</option>
             <option>heroic</option>
-        </select><br><br>
+        </select>
+
+        <label>
+            <input type="checkbox" name="expand">
+            Enable Transformer Expansion
+        </label>
+
+        <label>Model Name (optional)</label>
+        <input name="model" placeholder="e.g., distilgpt2">
 
         <button type="submit">Generate Story</button>
     </form>
 
     {% if story %}
-        <h2>Your Story</h2>
-        <textarea readonly>{{ story }}</textarea>
+    <div class="story-box">
+        <h2>Generated Story</h2>
+        <textarea readonly style="height: 320px;">{{ story }}</textarea>
+
+        {% if info %}
+        <div class="info-text">
+            Engine Mode: {{ info.model_used }}
+        </div>
+        {% endif %}
+    </div>
     {% endif %}
+
+</div>
+
 </body>
 </html> -->
 
-from flask import Flask, render_template, request
-from story_engine.engine import StoryEngine
 
-app = Flask(__name__)
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>AI Story Builder</title>
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    story = None
-    info = None
-    if request.method == "POST":
-        p = request.form.get("protagonist", "").strip()
-        ally = request.form.get("ally", "").strip() or "a companion"
-        ant = request.form.get("antagonist", "").strip() or "an opposing force"
-        setting = request.form.get("setting", "").strip()
-        conflict = request.form.get("conflict", "").strip()
-        obj = request.form.get("object", "").strip()
-        theme = request.form.get("theme", "").strip() or "life"
-        ending = request.form.get("ending", "hopeful").strip().lower()
-        expand = True if request.form.get("expand") == "on" else False
-        model = request.form.get("model", "").strip() or None
-
-        engine = StoryEngine(model_name=model, do_expand=expand)
-        story = engine.generate(p, ally, ant, setting, conflict, obj, theme, ending)
-        info = {
-            "model_used": model if expand and model else ("template-only" if not expand else "default-model")
+    <style>
+        body {
+            font-family: "Inter", Arial, sans-serif;
+            background: linear-gradient(135deg, #3b1e63, #1c1f4a 60%, #0f1124);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
-    return render_template("index.html", story=story, info=info)
+        .container {
+            width: 90%;
+            max-width: 760px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(14px);
+            padding: 40px;
+            margin-top: 60px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
 
-if __name__ == "__main__":
-    app.run(debug=True)
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 600;
+            color: #f0f0ff;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 16px;
+            display: block;
+            color: #e4e4ff;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.15);
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.25s ease;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(230,230,255,0.75);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background: rgba(255,255,255,0.25);
+            border-color: #b388ff;
+            box-shadow: 0 0 0 3px rgba(179,136,255,0.35);
+        }
+
+        select {
+            color: #ffffff;
+        }
+
+        button {
+            margin-top: 26px;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #7d3cff, #5a2fd3);
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #9061ff, #643df0);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(125, 60, 255, 0.35);
+        }
+
+        .story-box {
+            margin-top: 40px;
+            padding: 20px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        h2 {
+            color: #eaeaff;
+            font-size: 24px;
+            margin-bottom: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #ffffff;
+            font-size: 15px;
+            resize: none;
+        }
+
+        .info-text {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #d3c9ff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>AI Story Builder</h1>
+
+    <form method="POST">
+        <label>Protagonist</label>
+        <input name="protagonist" required placeholder="Enter protagonist name">
+
+        <label>Supporting Character</label>
+        <input name="ally" placeholder="Enter supporting character">
+
+        <label>Antagonist</label>
+        <input name="antagonist" placeholder="Enter antagonist">
+
+        <label>Setting</label>
+        <input name="setting" required placeholder="Enter story setting">
+
+        <label>Conflict</label>
+        <input name="conflict" required placeholder="What problem drives the story?">
+
+        <label>Important Object</label>
+        <input name="object" placeholder="Key item in the story">
+
+        <label>Theme</label>
+        <input name="theme" placeholder="e.g., Courage, Destiny, Forgiveness">
+
+        <label>Ending Style</label>
+        <select name="ending">
+            <option>happy</option>
+            <option>sad</option>
+            <option>bittersweet</option>
+            <option>hopeful</option>
+            <option>tragic</option>
+            <option>poetic</option>
+            <option>heroic</option>
+        </select>
+
+        <label>
+            <input type="checkbox" name="expand">
+            Enable Transformer Expansion
+        </label>
+
+        <label>Model Name (optional)</label>
+        <input name="model" placeholder="e.g., distilgpt2">
+
+        <button type="submit">Generate Story</button>
+    </form>
+
+    {% if story %}
+    <div class="story-box">
+        <h2>Generated Story</h2>
+        <textarea readonly>{{ story }}</textarea>
+
+        {% if info %}
+        <div class="info-text">
+            Engine Mode: {{ info.model_used }}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

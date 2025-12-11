@@ -23,6 +23,15 @@
 #     app.run(debug=True)
 
 from flask import Flask, render_template, request
+import sys
+from pathlib import Path
+
+# Ensure project root is on sys.path so sibling packages (like `story_engine`) can be
+# imported when running this script directly (e.g. `python web_app/app.py`).
+project_root = Path(__file__).resolve().parents[1]
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 from story_engine.engine import StoryEngine
 
 app = Flask(__name__)
