@@ -74,8 +74,7 @@ python -m cli_app.story_cli --expand --model distilgpt2
 ## Run the Web Application
 python web_app/app.py
 ## The application will be available at:
-http://127.0.0.1:5000/
-
+http://127.0.0.1:5000
 # Sample Use Case
 
 A user provides the following inputs:
